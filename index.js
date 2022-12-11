@@ -37,18 +37,22 @@ async function run () {
         //  ---------------- update content --------------------------------
         app.put('/content/:id', async (req, res) => {
             const contentId = req.params.id
-            console.log(contentId)
             const filter = {_id:ObjectId(contentId)}
             const content = req.body
-            console.log(content)
             const options = {upsert:true}
             const updateDoc = {
                 $set:{...content}
             }
             const result = await contentsCollection.updateOne(filter , updateDoc , options)
-            console.log(result)
             res.send(result)
+        })
 
+        // ------------ delete api --------------------
+        app.delete('/content/:id', async(req, res) => {
+            const contentId = req.params.id
+            const filter = {_id:ObjectId(contentId)}
+            const result = await contentsCollection.deleteOne(filter) 
+            res.send(result)
         })
     }
     finally{}
