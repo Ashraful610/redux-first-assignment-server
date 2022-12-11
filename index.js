@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion , ObjectId} = require('mongodb');
 
 app.use(express.json());
 app.use(cors());
@@ -32,6 +32,23 @@ async function run () {
             const content = req.body
             const result = await contentsCollection.insertOne(content)
             res.send(result)
+        })
+
+        //  ---------------- update content --------------------------------
+        app.put('/content/:id', async (req, res) => {
+            const contentId = req.params.id
+            console.log(contentId)
+            const filter = {_id:ObjectId(contentId)}
+            const content = req.body
+            console.log(content)
+            const options = {upsert:true}
+            const updateDoc = {
+                $set:{...content}
+            }
+            const result = await contentsCollection.updateOne(filter , updateDoc , options)
+            console.log(result)
+            res.send(result)
+
         })
     }
     finally{}
